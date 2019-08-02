@@ -80,7 +80,6 @@ export default (
     // If we make it to this point in CI, our recordings are out of date.
     // Notify the developer to update recordings.
     if (process.env.CI) {
-      console.log(process.env)
       throw new Error('Recordings out of date, please update.')
     }
 
