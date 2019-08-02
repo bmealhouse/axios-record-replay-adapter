@@ -26,7 +26,7 @@ useAxiosRecordReplayAdapter()
   createRequest(axiosRequestConfig) {
     return {
       method: requestConfig.method,
-      url: new URL(requestConfig.url).pathname,
+      path: new URL(requestConfig.url).pathname,
       data: requestConfig.data,
     }
   },
