@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add npm script to release axios-record-replay-adapter
 
+### Changed
+
+- Return a function to restore the default axios adapter
+
 ### Fixed
 
 - Fix mistake in documentation

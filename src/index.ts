@@ -36,7 +36,9 @@ function defaultCreateResponse(response: AxiosResponse): any {
   }
 }
 
-export default (options: AxiosRecordReplayAdapterOptions = {}): any => {
+export default (
+  options: AxiosRecordReplayAdapterOptions = {},
+): (() => void) => {
   const {
     axiosInstance = axios,
     recordingsDir = './recordings',
@@ -44,17 +46,15 @@ export default (options: AxiosRecordReplayAdapterOptions = {}): any => {
     createResponse = defaultCreateResponse,
   } = options
 
-  defaultAdapter = axiosInstance.defaults.adapter
-  axiosInstance.defaults.adapter = axiosRecordReplayAdapter
-
   try {
     fs.mkdirSync(path.resolve(process.cwd(), recordingsDir))
   } catch {}
 
-  return {
-    restore() {
-      axiosInstance.defaults.adapter = defaultAdapter
-    },
+  defaultAdapter = axiosInstance.defaults.adapter
+  axiosInstance.defaults.adapter = axiosRecordReplayAdapter
+
+  return () => {
+    axiosInstance.defaults.adapter = defaultAdapter
   }
 
   async function axiosRecordReplayAdapter(
