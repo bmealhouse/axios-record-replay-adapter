@@ -79,7 +79,15 @@ export default (
 
     // If we make it to this point in CI, our recordings are out of date.
     // Notify the developer to update recordings.
-    if (process.env.CI) {
+    if (
+      process.env.CI &&
+      !(
+        process.env.npm_package_repository_url &&
+        process.env.npm_package_repository_url.includes(
+          'bmealhouse/axios-record-replay-adapter',
+        )
+      )
+    ) {
       throw new Error('Recordings out of date, please update.')
     }
 
