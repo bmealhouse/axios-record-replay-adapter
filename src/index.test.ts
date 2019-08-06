@@ -2,29 +2,34 @@ import fs from 'fs'
 import axios from 'axios'
 import useAxiosRecordReplayAdapter from '.'
 
-const format = (data: string): string => {
+const format = (data: string | object): string => {
+  if (typeof data !== 'string') {
+    data = JSON.stringify(data, null, 2)
+  }
   return data.replace(/"/g, "'")
 }
 
-afterAll(() => {
-  const recordings = fs
-    .readdirSync('./recordings')
-    .map(filename => `./recordings/${filename}`)
+afterEach(() => {
+  try {
+    const recordings = fs
+      .readdirSync('./recordings')
+      .map(filename => `./recordings/${filename}`)
 
-  recordings.forEach(fs.unlinkSync)
-  fs.rmdirSync('./recordings')
+    recordings.forEach(fs.unlinkSync)
+    fs.rmdirSync('./recordings')
+  } catch {}
 })
 
-test('creates the default "./recordings" directory', () => {
+test('creates the default recordings directory', () => {
   useAxiosRecordReplayAdapter({
     axiosInstance: axios.create(),
   })
-
   expect(fs.existsSync('./recordings')).toBeTruthy()
 })
 
-test('creates a custom "./src/recordings" directory', () => {
+test('creates a custom recordings directory', () => {
   const recordingsDir = './src/recordings'
+
   useAxiosRecordReplayAdapter({
     axiosInstance: axios.create(),
     recordingsDir,
@@ -34,7 +39,7 @@ test('creates a custom "./src/recordings" directory', () => {
   fs.rmdirSync(recordingsDir)
 })
 
-test('creates a recording when calling https://jsonplaceholder.typicode.com/todos/1', async () => {
+test('creates a recording', async () => {
   const axiosInstance = axios.create()
   useAxiosRecordReplayAdapter({axiosInstance})
 
@@ -68,4 +73,72 @@ test('creates a recording when calling https://jsonplaceholder.typicode.com/todo
       }
     }"
   `)
+})
+
+test('returns a cached response when a recording exists', async () => {
+  const axiosInstance = axios.create()
+  const spy = jest.spyOn(axiosInstance.defaults, 'adapter')
+
+  useAxiosRecordReplayAdapter({axiosInstance})
+  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+
+  expect(spy).toHaveBeenCalledTimes(1)
+})
+
+test('records a custom request', async () => {
+  const axiosInstance = axios.create()
+
+  useAxiosRecordReplayAdapter({
+    axiosInstance,
+    createRequest(requestConfig) {
+      return {path: new URL(requestConfig.url!).pathname}
+    },
+  })
+
+  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+  const [recording] = fs.readdirSync('./recordings')
+  const {request} = JSON.parse(
+    fs.readFileSync(`./recordings/${recording}`, 'utf8'),
+  )
+
+  expect(format(request)).toMatchInlineSnapshot(`
+    "{
+      'path': '/todos/1'
+    }"
+  `)
+})
+
+test('create a custom reponse', async () => {
+  const axiosInstance = axios.create()
+
+  useAxiosRecordReplayAdapter({
+    axiosInstance,
+    createResponse(response) {
+      return {data: Buffer.from(new ArrayBuffer(128))}
+    },
+  })
+
+  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+  const [recording] = fs.readdirSync('./recordings')
+  const {response} = JSON.parse(
+    fs.readFileSync(`./recordings/${recording}`, 'utf8'),
+  )
+
+  expect(format(response)).toMatchInlineSnapshot(`
+    "{
+      'data': '[Buffer]'
+    }"
+  `)
+})
+
+test('restores default axios adapter', () => {
+  const defaultAdapter = axios.defaults.adapter
+
+  const restoreDefaultAdapater = useAxiosRecordReplayAdapter()
+  expect(axios.defaults.adapter).not.toBe(defaultAdapter)
+
+  restoreDefaultAdapater()
+  expect(axios.defaults.adapter).toBe(defaultAdapter)
 })

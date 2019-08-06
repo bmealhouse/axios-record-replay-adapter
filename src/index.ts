@@ -14,6 +14,7 @@ const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 
 interface AxiosRecordReplayAdapterOptions {
+  debug?: boolean
   axiosInstance?: AxiosInstance
   recordingsDir?: string
   createRequest?(config: AxiosRequestConfig): any
@@ -40,14 +41,19 @@ export default (
   options: AxiosRecordReplayAdapterOptions = {},
 ): (() => void) => {
   const {
+    debug = false,
     axiosInstance = axios,
     recordingsDir = './recordings',
     createRequest = defaultCreateRequest,
     createResponse = defaultCreateResponse,
   } = options
 
+  log('🍿  Initialized axios-record-replay-adapter')
+
   try {
-    fs.mkdirSync(path.resolve(process.cwd(), recordingsDir))
+    const absolutePath = path.resolve(process.cwd(), recordingsDir)
+    fs.mkdirSync(absolutePath)
+    log(`✨  Created recordings directory (${absolutePath})`)
   } catch {}
 
   defaultAdapter = axiosInstance.defaults.adapter
@@ -88,9 +94,12 @@ export default (
         )
       )
     ) {
-      throw new Error('Recordings out of date, please update.')
+      throw new Error(
+        'Recordings out of date. Delete the recordings directory and re-run tests to update.',
+      )
     }
 
+    log(`🎥  Created recording (${path.parse(filepath).base})`)
     await writeFile(filepath, createFileContents(request, response))
     return response
   }
@@ -124,6 +133,12 @@ export default (
       null,
       2,
     )
+  }
+
+  function log(message: string): void {
+    if (debug) {
+      console.log(message)
+    }
   }
 }
 
