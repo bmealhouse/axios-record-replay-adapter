@@ -1,4 +1,4 @@
-# Axios Record Replay Adapter 🎥 🎬 🍿
+# `axios-record-replay-adapter` 🎥 🎬 🍿
 
 [![npm version](https://img.shields.io/npm/v/axios-record-replay-adapter.svg)](https://npmjs.org/package/axios-record-replay-adapter)
 [![npm downloads](https://img.shields.io/npm/dm/axios-record-replay-adapter.svg)](https://npmjs.org/package/axios-record-replay-adapter)
@@ -16,14 +16,14 @@
 
 ## Installation
 
-**`yarn`**
+### yarn
 
 ```sh
 yarn add axios
 yarn add axios-record-replay-adapter --dev
 ```
 
-**`npm`**
+### npm
 
 ```sh
 npm i axios --save
