@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2019-08-08
+
 ### Added
 
 - Add debug option
@@ -15,7 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Don't throw CI error for this repository
-- Cleanup README
+- Renamed `createRequest` to `buildRequest`
+- Renamed `createResponse` to `buildResponse`
+- Cleanup docs
 
 ## [0.1.1] - 2019-08-01
 

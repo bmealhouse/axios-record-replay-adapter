@@ -17,11 +17,11 @@ interface AxiosRecordReplayAdapterOptions {
   debug?: boolean
   axiosInstance?: AxiosInstance
   recordingsDir?: string
-  createRequest?(config: AxiosRequestConfig): any
-  createResponse?(response: AxiosResponse): any
+  buildRequest?(config: AxiosRequestConfig): any
+  buildResponse?(response: AxiosResponse): any
 }
 
-function defaultCreateRequest(requestConfig: AxiosRequestConfig): any {
+function defaultBuildRequest(requestConfig: AxiosRequestConfig): any {
   return {
     method: requestConfig.method,
     path: new URL(requestConfig.url!).pathname,
@@ -29,7 +29,7 @@ function defaultCreateRequest(requestConfig: AxiosRequestConfig): any {
   }
 }
 
-function defaultCreateResponse(response: AxiosResponse): any {
+function defaultBuildResponse(response: AxiosResponse): any {
   return {
     status: response.status,
     statusText: response.statusText,
@@ -44,8 +44,8 @@ export default (
     debug = false,
     axiosInstance = axios,
     recordingsDir = './recordings',
-    createRequest = defaultCreateRequest,
-    createResponse = defaultCreateResponse,
+    buildRequest = defaultBuildRequest,
+    buildResponse = defaultBuildResponse,
   } = options
 
   log('🍿  Initialized axios-record-replay-adapter')
@@ -66,11 +66,11 @@ export default (
   async function axiosRecordReplayAdapter(
     config: AxiosRequestConfig,
   ): Promise<any> {
-    const request = createRequest(config)
+    const request = buildRequest(config)
 
     if (!request.path) {
       throw new Error(
-        'createRequest() must return an object with a "path" property.',
+        'buildRequest() must return an object with a "path" property.',
       )
     }
 
@@ -118,7 +118,7 @@ export default (
   }
 
   function createFileContents(req: any, res: AxiosResponse): string {
-    const response = createResponse(res)
+    const response = buildResponse(res)
     return JSON.stringify(
       {
         request: {

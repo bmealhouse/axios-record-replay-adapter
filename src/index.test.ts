@@ -92,7 +92,7 @@ test('records a custom request', async () => {
 
   useAxiosRecordReplayAdapter({
     axiosInstance,
-    createRequest(requestConfig) {
+    buildRequest(requestConfig) {
       return {path: new URL(requestConfig.url!).pathname}
     },
   })
@@ -115,7 +115,7 @@ test('create a custom reponse', async () => {
 
   useAxiosRecordReplayAdapter({
     axiosInstance,
-    createResponse(response) {
+    buildResponse(response) {
       return {data: Buffer.from(new ArrayBuffer(128))}
     },
   })

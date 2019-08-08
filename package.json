@@ -1,7 +1,7 @@
 {
   "name": "axios-record-replay-adapter",
   "version": "0.1.1",
-  "description": "Sit back, relax, and automatically record/replay your HTTP requests",
+  "description": "Sit back, relax, and enjoy automatic mocking for axios HTTP requests",
   "main": "index.js",
   "repository": "https://github.com/bmealhouse/axios-record-replay-adapter",
   "author": "Brent Mealhouse <bmealhouse@gmail.com>",

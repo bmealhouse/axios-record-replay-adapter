@@ -5,12 +5,14 @@
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![build status](https://travis-ci.com/bmealhouse/axios-record-replay-adapter.svg?branch=master)](https://travis-ci.com/bmealhouse/axios-record-replay-adapter)
 
-> Sit back, relax, and automatically record/replay your HTTP requests
+> Sit back, relax, and enjoy automatic mocking for axios HTTP requests
 
 ## Table of contents
 
 - [Installation](#installation)
+- [Setup](#setup)
 - [Usage](#usage)
+- [Advanded usage](#advanced-usage)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -30,52 +32,13 @@ npm i axios --save
 npm i axios-record-replay-adapter --save-dev
 ```
 
-## Usage
+## Setup
 
-### Use `axios-record-replay-adapter` with default options
+### Ignore recordings directory
 
-```js
-useAxiosRecordReplayAdapter()
-```
+When running tests in watch mode, the recordings directory must be ignored to prevent recording files from triggering tests to re-run.
 
-#### Default options
-
-```js
-{
-  axiosInstance: axios,
-  recordingsDir: './recordings',
-  createRequest(axiosRequestConfig) {
-    return {
-      method: requestConfig.method,
-      path: new URL(requestConfig.url).pathname,
-      data: requestConfig.data,
-    }
-  },
-  createResponse(axiosResponse) {
-    return {
-      status: response.status,
-      statusText: response.statusText,
-      data: response.data,
-    }
-  }
-}
-```
-
-### Use `axios-record-replay-adapter` with custom options
-
-```js
-const customAxiosInstance = axios.create()
-useAxiosRecordReplayAdapter({
-  axiosInstance: customAxiosInstance,
-  recordingsDir: './tests/recordings',
-})
-```
-
-### Ignore recordings directory in your test runner
-
-> When running tests in watch mode, the recordings directory needs to be ignored to prevent recording files from triggering tests to re-run.
-
-#### Jest example
+#### Jest
 
 ```json
 {
@@ -85,6 +48,61 @@ useAxiosRecordReplayAdapter({
     ]
   }
 }
+```
+
+## Usage
+
+### With defaults
+
+```js
+useAxiosRecordReplayAdapter()
+```
+
+### With options
+
+```js
+const customAxiosIntance = axios.create()
+useAxiosRecordReplayAdapter({
+  axiosInstance: customAxiosInstance
+  recordingsDir: './tests/recordings'
+})
+```
+
+### Restore axios default adapter
+
+`axios-record-replay-adpater` returns a function to restore the default `axios` adapter.
+
+```js
+const restoreDefaultAdapater = useAxiosRecordReplay()
+restoreDefaultAdapater()
+```
+
+## Advanced usage
+
+### With `buildRequest()`
+
+> **NOTE**: `buildRequest` must return a path property
+
+```js
+useAxiosRecordReplayAdapter({
+  buildRequest(axiosRequestConfig) {
+    return {
+      path: new URL(axiosRequestConfig.url).pathname
+    }
+  }
+})
+```
+
+### With `buildResponse()`
+
+```js
+useAxiosRecordReplayAdapter({
+  buildResponse(axiosResponse) {
+    return {
+      data: axiosResponse.data
+    }
+  }
+})
 ```
 
 ## Contributing
