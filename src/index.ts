@@ -110,11 +110,10 @@ export default (
     const hash = crypto.createHash('md5')
     hash.update(JSON.stringify(request))
 
-    return path.resolve(
-      process.cwd(),
-      recordingsDir,
-      `./${endpoint}_${hash.digest('hex')}.json`,
-    )
+    const MAX_FILE_LENGTH = 255
+    const suffix = `_${hash.digest('hex')}.json`
+    const filepath = path.resolve(process.cwd(), recordingsDir, `./${endpoint}`)
+    return `${filepath.substring(0, MAX_FILE_LENGTH - suffix.length)}${suffix}`
   }
 
   function createFileContents(req: any, res: AxiosResponse): string {
