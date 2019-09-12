@@ -1,6 +1,6 @@
 {
   "name": "axios-record-replay-adapter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Sit back, relax, and enjoy automatic mocking for axios HTTP requests",
   "main": "index.js",
   "repository": "https://github.com/bmealhouse/axios-record-replay-adapter",
