@@ -81,8 +81,6 @@ restoreDefaultAdapater()
 
 ### With `buildRequest()`
 
-> **NOTE**: `buildRequest` must return a path property
-
 ```js
 useAxiosRecordReplayAdapter({
   buildRequest(axiosRequestConfig) {
@@ -101,6 +99,18 @@ useAxiosRecordReplayAdapter({
     return {
       data: axiosResponse.data
     }
+  }
+})
+```
+
+### With `buildFilenamePrefix()`
+
+> **NOTE**: The result of `buildRequest()` gets passed to `buildFilenamePrefix(request)`
+
+```js
+useAxiosRecordReplayAdapter({
+  buildFilenamePrefix(requestFromBuildRequest) {
+    return request.path.replace(/\//g, '-').slice(1)
   }
 })
 ```

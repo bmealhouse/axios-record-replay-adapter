@@ -7,9 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2019-12-14
+
+### Changed
+
+- Recording filenames default to the hash only
+- Returning `path` from `buildRequest()` is not required
+
+### Added
+
+- Add `buildFilenamePrefix()` to axios-record-replay-adapter options
+
 ## [0.2.1] - 2019-09-12
 
-## Fixed
+### Fixed
 
 - Truncate the generated filepath to not exceed 255 characters
 
@@ -23,8 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Don't throw CI error for this repository
-- Renamed `createRequest` to `buildRequest`
-- Renamed `createResponse` to `buildResponse`
+- Renamed `createRequest()` to `buildRequest()`
+- Renamed `createResponse()` to `buildResponse()`
 - Cleanup docs
 
 ## [0.1.1] - 2019-08-01

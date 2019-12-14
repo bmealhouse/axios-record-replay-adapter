@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/quotes */
 import fs from 'fs'
 import axios from 'axios'
 import useAxiosRecordReplayAdapter from '.'
@@ -6,6 +7,7 @@ const format = (data: string | object): string => {
   if (typeof data !== 'string') {
     data = JSON.stringify(data, null, 2)
   }
+
   return data.replace(/"/g, "'")
 }
 
@@ -39,7 +41,7 @@ test('creates a custom recordings directory', () => {
   fs.rmdirSync(recordingsDir)
 })
 
-test('creates a recording', async () => {
+test('creates a recording with default filename', async () => {
   const axiosInstance = axios.create()
   useAxiosRecordReplayAdapter({axiosInstance})
 
@@ -49,7 +51,7 @@ test('creates a recording', async () => {
 
   const [recording] = fs.readdirSync('./recordings')
   expect(recording).toMatchInlineSnapshot(
-    `"todos-1_3439973d2c1ff6cc118d7af4cf797551.json"`,
+    `"3439973d2c1ff6cc118d7af4cf797551.json"`,
   )
 
   const recordingContents = fs.readFileSync(`./recordings/${recording}`, 'utf8')
@@ -73,6 +75,24 @@ test('creates a recording', async () => {
       }
     }"
   `)
+})
+
+test('creates a recording with filename prefix', async () => {
+  const axiosInstance = axios.create()
+
+  useAxiosRecordReplayAdapter({
+    axiosInstance,
+    buildFilenamePrefix(request) {
+      return request.path.replace(/\//g, '-').slice(1)
+    },
+  })
+
+  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+
+  const [recording] = fs.readdirSync('./recordings')
+  expect(recording).toMatchInlineSnapshot(
+    `"todos-1_3439973d2c1ff6cc118d7af4cf797551.json"`,
+  )
 })
 
 test('returns a cached response when a recording exists', async () => {
@@ -115,7 +135,7 @@ test('create a custom reponse', async () => {
 
   useAxiosRecordReplayAdapter({
     axiosInstance,
-    buildResponse(response) {
+    buildResponse(_response) {
       return {data: Buffer.from(new ArrayBuffer(128))}
     },
   })

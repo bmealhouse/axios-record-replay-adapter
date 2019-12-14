@@ -19,6 +19,7 @@ interface AxiosRecordReplayAdapterOptions {
   recordingsDir?: string
   buildRequest?(config: AxiosRequestConfig): any
   buildResponse?(response: AxiosResponse): any
+  buildFilenamePrefix?(request: any): string
 }
 
 function defaultBuildRequest(requestConfig: AxiosRequestConfig): any {
@@ -46,6 +47,7 @@ export default (
     recordingsDir = './recordings',
     buildRequest = defaultBuildRequest,
     buildResponse = defaultBuildResponse,
+    buildFilenamePrefix,
   } = options
 
   log('🍿  Initialized axios-record-replay-adapter')
@@ -67,13 +69,6 @@ export default (
     config: AxiosRequestConfig,
   ): Promise<any> {
     const request = buildRequest(config)
-
-    if (!request.path) {
-      throw new Error(
-        'buildRequest() must return an object with a "path" property.',
-      )
-    }
-
     const filepath = generateFilepath(request)
 
     try {
@@ -105,15 +100,15 @@ export default (
   }
 
   function generateFilepath(request: any): string {
-    const endpoint = request.path.replace(/\//g, '-').substr(1)
+    const filepath = path.resolve(process.cwd(), recordingsDir)
 
     const hash = crypto.createHash('md5')
     hash.update(JSON.stringify(request))
+    const filename = hash.digest('hex')
 
-    const MAX_FILE_LENGTH = 255
-    const suffix = `_${hash.digest('hex')}.json`
-    const filepath = path.resolve(process.cwd(), recordingsDir, `./${endpoint}`)
-    return `${filepath.substring(0, MAX_FILE_LENGTH - suffix.length)}${suffix}`
+    return buildFilenamePrefix
+      ? `${filepath}/${buildFilenamePrefix(request)}_${filename}.json`
+      : `${filepath}/${filename}.json`
   }
 
   function createFileContents(req: any, res: AxiosResponse): string {
