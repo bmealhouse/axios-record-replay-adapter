@@ -26,6 +26,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "pkg"
+    ],
     "watchPathIgnorePatterns": [
       "<rootDir>/recordings"
     ]
