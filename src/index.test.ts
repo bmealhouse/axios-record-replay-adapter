@@ -96,13 +96,16 @@ test('creates a recording with filename prefix', async () => {
 })
 
 test('returns a cached response when a recording exists', async () => {
-  const axiosInstance = axios.create()
+  const axiosInstance = axios.create({
+    baseURL: 'https://jsonplaceholder.typicode.com',
+  })
+
   const spy = jest.spyOn(axiosInstance.defaults, 'adapter')
 
   useAxiosRecordReplayAdapter({axiosInstance})
-  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
-  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
-  await axiosInstance.get('https://jsonplaceholder.typicode.com/todos/1')
+  await axiosInstance.get('/todos/1')
+  await axiosInstance.get('/todos/1')
+  await axiosInstance.get('/todos/1')
 
   expect(spy).toHaveBeenCalledTimes(1)
 })

@@ -23,9 +23,12 @@ interface AxiosRecordReplayAdapterOptions {
 }
 
 function defaultBuildRequest(requestConfig: AxiosRequestConfig): any {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const baseURL = requestConfig.baseURL || ''
+
   return {
     method: requestConfig.method,
-    path: new URL(requestConfig.url!).pathname,
+    path: new URL(baseURL + requestConfig.url!).pathname,
     data: requestConfig.data,
   }
 }
