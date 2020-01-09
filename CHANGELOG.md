@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2020-01-08
+
+### Fixed
+
+- Support `baseURL` in `defaultBuildRequest`
+
 ## [1.0.0] - 2019-12-14
 
 ### Changed
