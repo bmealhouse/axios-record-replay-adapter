@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Replace jsonplaceholder with reqres
 - Upgrade dependencies
 
 ## [1.1.0] - 2020-01-24
