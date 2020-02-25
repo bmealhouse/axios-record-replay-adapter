@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/quotes */
 import * as fs from 'fs'
 import axios from 'axios'
 import useAxiosRecordReplayAdapter from '.'
