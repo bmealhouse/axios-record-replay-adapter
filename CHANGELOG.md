@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Replace jsonplaceholder with reqres
+- Minimal xo/prettier config
 - Upgrade dependencies
+- Misc updates
 
 ## [1.1.0] - 2020-01-24
 
