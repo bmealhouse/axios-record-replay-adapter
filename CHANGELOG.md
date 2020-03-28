@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 1.1.1 - 2020-03-28
+
+### Fixed
+
+- Display missing recording message in CI and rethrow error
+
 ### Changed
 
 - Replace jsonplaceholder with reqres

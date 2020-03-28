@@ -77,25 +77,27 @@ export default (
 		try {
 			const {response} = JSON.parse(await readFile(filepath, 'utf8'));
 			return {config, ...response, data: JSON.stringify(response.data)};
-		} catch {}
+		} catch (error) {
+			// If we make it to this point in CI, our recordings are out of date.
+			// Notify the developer to update recordings.
+			if (
+				process.env.CI &&
+				!(
+					process.env.npm_package_repository_url &&
+					process.env.npm_package_repository_url.includes(
+						'bmealhouse/axios-record-replay-adapter'
+					)
+				)
+			) {
+				console.log(
+					'Recording not found. Re-run tests to create missing recordings.\n',
+					{filepath, request}
+				);
+				throw error;
+			}
+		}
 
 		const response = await defaultAdapter!(config);
-
-		// If we make it to this point in CI, our recordings are out of date.
-		// Notify the developer to update recordings.
-		if (
-			process.env.CI &&
-			!(
-				process.env.npm_package_repository_url &&
-				process.env.npm_package_repository_url.includes(
-					'bmealhouse/axios-record-replay-adapter'
-				)
-			)
-		) {
-			throw new Error(
-				'Recordings out of date. Delete the recordings directory and re-run tests to update.'
-			);
-		}
 
 		log(`🎥  Created recording (${path.parse(filepath).base})`);
 		await writeFile(filepath, createFileContents(request, response));
