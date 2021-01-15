@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Experimental support for I/O timing
 - Bundle with tsdx
 - Upgrade dependencies
 

@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import { performance, PerformanceObserver } from "perf_hooks";
 import { promisify } from "util";
 import axios, {
   AxiosAdapter,
@@ -9,12 +10,46 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
+let totalDuration = 0;
+let totalRequests = 0;
+
+const performanceObserver = new PerformanceObserver(items => {
+  items.getEntries().forEach(entry => {
+    totalDuration += entry.duration;
+  });
+  console.log(`⏱  Total I/O time: ${totalDuration}ms`);
+});
+
+let performancObserverEnabled = false;
+const enablePerformanceObserver = () => {
+  if (!performancObserverEnabled) {
+    performanceObserver.observe({
+      entryTypes: ["measure"],
+      buffered: true,
+    });
+    performancObserverEnabled = true;
+  }
+};
+
+process.on("beforeExit", () => {
+  if (performancObserverEnabled) {
+    console.log(`⏱  Total I/O time: ${totalDuration}ms (onBeforeExit)`);
+  }
+});
+
+process.on("exit", () => {
+  if (performancObserverEnabled) {
+    console.log(`⏱  Total I/O time: ${totalDuration}ms (onExit)`);
+  }
+});
+
 let defaultAdapter: AxiosAdapter | undefined;
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
 interface AxiosRecordReplayAdapterOptions {
   debug?: boolean;
+  experimental_ioTiming?: boolean;
   axiosInstance?: AxiosInstance;
   recordingsDir?: string;
   buildRequest?(config: AxiosRequestConfig): any;
@@ -46,12 +81,17 @@ export default (
 ): (() => void) => {
   const {
     debug = false,
+    experimental_ioTiming = false,
     axiosInstance = axios,
     recordingsDir = "./recordings",
     buildRequest = defaultBuildRequest,
     buildResponse = defaultBuildResponse,
     buildFilenamePrefix,
   } = options;
+
+  if (debug && experimental_ioTiming) {
+    enablePerformanceObserver();
+  }
 
   log("🍿  Initialized axios-record-replay-adapter");
 
@@ -71,12 +111,29 @@ export default (
   async function axiosRecordReplayAdapter(
     config: AxiosRequestConfig
   ): Promise<any> {
+    totalRequests += 1;
+    const performanceId = `request${totalRequests}`;
+    performance.mark(`${performanceId}-read-start`);
+
     const request = buildRequest(config);
     const filepath = generateFilepath(request);
 
     try {
       const { response } = JSON.parse(await readFile(filepath, "utf8"));
-      return { config, ...response, data: JSON.stringify(response.data) };
+      const result = {
+        config,
+        ...response,
+        data: JSON.stringify(response.data),
+      };
+
+      performance.mark(`${performanceId}-read-end`);
+      performance.measure(
+        performanceId,
+        `${performanceId}-read-start`,
+        `${performanceId}-read-end`
+      );
+
+      return result;
     } catch (error) {
       // If we make it to this point in CI, our recordings are out of date.
       // Notify the developer to update recordings.
@@ -93,14 +150,30 @@ export default (
           "Recording not found. Re-run tests to create missing recordings.\n",
           { filepath, request }
         );
+        performance.clearMarks();
         throw error;
       }
     }
 
+    performance.mark(`${performanceId}-read-end`);
+    performance.measure(
+      performanceId,
+      `${performanceId}-read-start`,
+      `${performanceId}-read-end`
+    );
+
     const response = await defaultAdapter!(config);
 
+    performance.mark(`${performanceId}-write-start`);
     log(`🎥  Created recording (${path.parse(filepath).base})`);
     await writeFile(filepath, createFileContents(request, response));
+    performance.mark(`${performanceId}-write-end`);
+    performance.measure(
+      performanceId,
+      `${performanceId}-write-start`,
+      `${performanceId}-write-end`
+    );
+
     return response;
   }
 
