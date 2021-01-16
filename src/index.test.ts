@@ -2,7 +2,7 @@ import * as fs from "fs";
 import axios from "axios";
 import useAxiosRecordReplayAdapter from ".";
 
-const format = (data: string | object): string => {
+const format = (data: string | Record<string, unknown>): string => {
   if (typeof data !== "string") {
     data = JSON.stringify(data, null, 2);
   }
@@ -14,9 +14,12 @@ afterEach(() => {
   try {
     const recordings = fs
       .readdirSync("./recordings")
-      .map(filename => `./recordings/${filename}`);
+      .map((filename) => `./recordings/${filename}`);
 
-    recordings.forEach(fs.unlinkSync);
+    recordings.forEach((recording) => {
+      fs.unlinkSync(recording);
+    });
+
     fs.rmdirSync("./recordings");
   } catch {}
 });

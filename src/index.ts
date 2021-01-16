@@ -13,8 +13,8 @@ import axios, {
 let totalDuration = 0;
 let totalRequests = 0;
 
-const performanceObserver = new PerformanceObserver(items => {
-  items.getEntries().forEach(entry => {
+const performanceObserver = new PerformanceObserver((items) => {
+  items.getEntries().forEach((entry) => {
     totalDuration += entry.duration;
   });
   console.log(`⏱  Total I/O time: ${totalDuration}ms`);
@@ -76,9 +76,9 @@ function defaultBuildResponse(response: AxiosResponse): any {
   };
 }
 
-export default (
+export default function useAxiosRecordReplayAdapter(
   options: AxiosRecordReplayAdapterOptions = {}
-): (() => void) => {
+): () => void {
   const {
     debug = false,
     experimental_ioTiming = false,
@@ -134,16 +134,13 @@ export default (
       );
 
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       // If we make it to this point in CI, our recordings are out of date.
       // Notify the developer to update recordings.
       if (
         process.env.CI &&
-        !(
-          process.env.npm_package_repository_url &&
-          process.env.npm_package_repository_url.includes(
-            "bmealhouse/axios-record-replay-adapter"
-          )
+        !process.env.npm_package_repository_url?.includes(
+          "bmealhouse/axios-record-replay-adapter"
         )
       ) {
         console.log(
@@ -215,7 +212,7 @@ export default (
       console.log(message);
     }
   }
-};
+}
 
 function safeJsonParse(data: string): any {
   try {
