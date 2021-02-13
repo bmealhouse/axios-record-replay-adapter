@@ -1,10 +1,29 @@
 {
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"],
   "compilerOptions": {
-    "target": "es2019",
+    // project options
+    "allowJs": false,
+    "declaration": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "noEmit": true,
+    "sourceMap": true,
+    // strict checks
+    "strict": true,
+    // module resolution
+    "baseUrl": ".",
     "esModuleInterop": true,
-    "strict": true
-  },
-  "include": ["src/**/*"]
+    "moduleResolution": "node",
+    // advanced
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
+  }
 }
+
+// TODO
+// match output dir to input dir. e.g. dist/index instead of dist/src/index
+// "rootDir": "./src"

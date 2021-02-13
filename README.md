@@ -3,7 +3,6 @@
 [![npm version](https://img.shields.io/npm/v/axios-record-replay-adapter.svg)](https://npmjs.org/package/axios-record-replay-adapter)
 [![npm downloads](https://img.shields.io/npm/dm/axios-record-replay-adapter.svg)](https://npmjs.org/package/axios-record-replay-adapter)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
-[![build status](https://travis-ci.com/bmealhouse/axios-record-replay-adapter.svg?branch=master)](https://travis-ci.com/bmealhouse/axios-record-replay-adapter)
 
 > Sit back, relax, and enjoy automatic mocking for axios HTTP requests
 
