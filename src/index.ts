@@ -10,6 +10,7 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
+let id = "";
 let totalDuration = 0;
 let totalRequests = 0;
 
@@ -17,16 +18,21 @@ const performanceObserver = new PerformanceObserver((items) => {
   items.getEntries().forEach((entry) => {
     totalDuration += entry.duration;
   });
-  console.log(`⏱  Total I/O time: ${totalDuration}ms`);
+  console.log(`ioTime: ${id}: ${totalDuration}`);
 });
 
 let performancObserverEnabled = false;
 const enablePerformanceObserver = () => {
   if (!performancObserverEnabled) {
+    id = `${Math.random().toString(36).slice(2, 9)}-${Math.random()
+      .toString(36)
+      .slice(2, 9)}`;
+
     performanceObserver.observe({
       entryTypes: ["measure"],
       buffered: true,
     });
+
     performancObserverEnabled = true;
   }
 };
@@ -89,7 +95,7 @@ export default function useAxiosRecordReplayAdapter(
     buildFilenamePrefix,
   } = options;
 
-  if (debug && experimental_ioTiming) {
+  if (experimental_ioTiming) {
     enablePerformanceObserver();
   }
 

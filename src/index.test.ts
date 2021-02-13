@@ -26,6 +26,7 @@ afterEach(() => {
 
 test("creates the default recordings directory", () => {
   useAxiosRecordReplayAdapter({
+    experimental_ioTiming: true,
     axiosInstance: axios.create(),
   });
   expect(fs.existsSync("./recordings")).toBeTruthy();
@@ -35,6 +36,7 @@ test("creates a custom recordings directory", () => {
   const recordingsDir = "./src/recordings";
 
   useAxiosRecordReplayAdapter({
+    experimental_ioTiming: true,
     axiosInstance: axios.create(),
     recordingsDir,
   });
@@ -91,6 +93,7 @@ test("creates a recording with filename prefix", async () => {
   const axiosInstance = axios.create();
 
   useAxiosRecordReplayAdapter({
+    experimental_ioTiming: true,
     axiosInstance,
     buildFilenamePrefix(request) {
       return request.path.replace(/\//g, "-").slice(1);
