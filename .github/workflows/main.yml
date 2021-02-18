@@ -28,7 +28,7 @@ jobs:
         run: yarn lint
 
       - name: Test
-        run: yarn test --ci --coverage --max-workers=2
+        run: yarn test --ci --coverage --run-in-band
 
       - name: Build
         run: yarn build
