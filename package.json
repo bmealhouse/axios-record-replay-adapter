@@ -53,6 +53,6 @@
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
     "prepare": "yarn build",
-    "test": "zero-test --run-in-band"
+    "test": "cross-env-shell DEBUG=true zero-test --run-in-band"
   }
 }
