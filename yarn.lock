@@ -1519,10 +1519,10 @@
     "@typescript-eslint/types" "4.13.0"
     eslint-visitor-keys "^2.0.0"
 
-"@zero-cli/zero-test@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@zero-cli/zero-test/-/zero-test-0.2.3.tgz#bd5841088dbfcbd074700118e1cf3568b60446e3"
-  integrity sha512-WdVyy7qoPqL78az3JraLY4UtvXoXEDWTT8pXeexv3H7Y6drSYSZ/uvtyTDK6VGx7DS9l2gtgD+9OpCc/kOv07Q==
+"@zero-cli/zero-test@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@zero-cli/zero-test/-/zero-test-0.3.0.tgz#34f9da5ea282c1620ba94ba2585a36c73f17e1ab"
+  integrity sha512-3sm3+cQr7+R+fXF9BEf7rJlRWkMuH4A02cPEDcEA6wDP+61z0Djf4102WFrR1sZbjZoO1oeTPq0+CqC886hGrA==
   dependencies:
     "@babel/core" "7.12.16"
     "@babel/preset-env" "7.12.16"
