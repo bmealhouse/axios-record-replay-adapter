@@ -143,7 +143,43 @@ test("records a custom request", async () => {
   	`);
 });
 
-test("create a custom reponse", async () => {
+test("records a custom request and post processes it", async () => {
+  const axiosInstance = axios.create();
+
+  useAxiosRecordReplayAdapter({
+    axiosInstance,
+    postProcessRequest(requestConfig) {
+      return {
+        path: requestConfig.path,
+        data: {
+          name: "keanu",
+          job: "dude",
+        },
+      };
+    },
+  });
+
+  await axiosInstance.post("https://reqres.in/api/users", {
+    name: "morpheus",
+    job: "leader",
+  });
+  const [recording] = fs.readdirSync("./recordings");
+  const { request } = JSON.parse(
+    fs.readFileSync(`./recordings/${recording}`, "utf8")
+  );
+
+  expect(format(request)).toMatchInlineSnapshot(`
+      "{
+        ’path’: ’/api/users’,
+        ’data’: {
+          ’name’: ’keanu’,
+          ’job’: ’dude’
+        }
+      }"
+    `);
+});
+
+test("create a custom response", async () => {
   const axiosInstance = axios.create();
 
   useAxiosRecordReplayAdapter({

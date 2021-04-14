@@ -19,6 +19,7 @@ interface AxiosRecordReplayAdapterOptions {
   recordingsDir?: string;
   buildRequest?(config: AxiosRequestConfig): any;
   buildResponse?(response: AxiosResponse): any;
+  postProcessRequest?(config: any): any;
   buildFilenamePrefix?(request: any): string;
 }
 
@@ -41,6 +42,10 @@ function defaultBuildResponse(response: AxiosResponse): any {
   };
 }
 
+function defaultPostProcessRequest(requestConfig: AxiosRequestConfig): any {
+  return requestConfig;
+}
+
 export function useAxiosRecordReplayAdapter(
   options: AxiosRecordReplayAdapterOptions = {}
 ): () => void {
@@ -50,6 +55,7 @@ export function useAxiosRecordReplayAdapter(
     recordingsDir = "./recordings",
     buildRequest = defaultBuildRequest,
     buildResponse = defaultBuildResponse,
+    postProcessRequest = defaultPostProcessRequest,
     buildFilenamePrefix,
   } = options;
 
@@ -97,7 +103,10 @@ export function useAxiosRecordReplayAdapter(
     const response = await defaultAdapter!(config);
 
     log(`🎥  Created recording (${path.parse(filepath).base})`);
-    await writeFile(filepath, createFileContents(request, response));
+    await writeFile(
+      filepath,
+      createFileContents(postProcessRequest(request), response)
+    );
     return response;
   }
 

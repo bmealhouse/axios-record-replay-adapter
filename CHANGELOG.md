@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `postProcessRequest` option, allowing the ability to alter file contents without changing the request itself
+
 ### Changed
 
 - Switch to zero-test
