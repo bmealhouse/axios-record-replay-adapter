@@ -34,7 +34,7 @@
     "cross-env": "7.0.3",
     "eslint-config-xo-typescript": "0.37.0",
     "husky": "9.1.5",
-    "rimraf": "3.0.2",
+    "rimraf": "6.0.1",
     "rollup": "2.39.0",
     "rollup-plugin-sourcemaps": "0.6.3",
     "rollup-plugin-typescript2": "0.29.0",
