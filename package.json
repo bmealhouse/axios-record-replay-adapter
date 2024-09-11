@@ -34,7 +34,6 @@
     "cross-env": "7.0.3",
     "eslint-config-xo-typescript": "0.37.0",
     "husky": "9.1.5",
-    "pinst": "2.1.4",
     "rimraf": "3.0.2",
     "rollup": "2.39.0",
     "rollup-plugin-sourcemaps": "0.6.3",
@@ -49,10 +48,7 @@
   "scripts": {
     "build": "rimraf dist && rollup --config",
     "lint": "xo",
-    "postinstall": "husky install",
-    "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable",
-    "prepare": "yarn build",
+    "prepare": "husky",
     "test": "cross-env-shell DEBUG=true zero-test --run-in-band"
   }
 }
