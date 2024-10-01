@@ -32,7 +32,7 @@
     "babel-plugin-annotate-pure-calls": "0.4.0",
     "babel-plugin-polyfill-regenerator": "0.6.2",
     "cross-env": "7.0.3",
-    "eslint-config-xo-typescript": "0.37.0",
+    "eslint-config-xo-typescript": "7.0.0",
     "husky": "9.1.5",
     "rimraf": "5.0.10",
     "rollup": "2.79.2",
