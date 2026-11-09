@@ -4,7 +4,6 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import typescript from "rollup-plugin-typescript2";
 import babel from "@rollup/plugin-babel";
-import sourceMaps from "rollup-plugin-sourcemaps";
 import ts from "typescript";
 import { DEFAULT_EXTENSIONS as DEFAULT_BABEL_EXTENSIONS } from "@babel/core";
 
@@ -37,6 +36,8 @@ export default ["cjs", "esm"].map((format, index) => ({
     json(),
     typescript({
       typescript: ts,
+      // picomatch >=2.3.2 no longer matches the default "*.ts+(|x)" pattern
+      include: ["*.ts", "**/*.ts"],
       tsconfigDefaults: {
         exclude: ["dist", "node_modules", "**/*.test.ts"],
         target: "esnext",
@@ -48,6 +49,5 @@ export default ["cjs", "esm"].map((format, index) => ({
       extensions: [...DEFAULT_BABEL_EXTENSIONS, "ts"],
       babelHelpers: "bundled",
     }),
-    sourceMaps(),
   ],
 }));

@@ -158,7 +158,8 @@ test("returns a cached response when a recording exists", async () => {
   // arrange
   const axiosInstance = axios.create({ baseURL });
 
-  const spy = jest.spyOn(axiosInstance.defaults, "adapter");
+  const spy = jest.fn(axiosInstance.defaults.adapter);
+  axiosInstance.defaults.adapter = spy;
 
   // act
   useAxiosRecordReplayAdapter({ axiosInstance });

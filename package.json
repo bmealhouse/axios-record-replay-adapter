@@ -21,7 +21,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/core": "7.12.16",
+    "@babel/core": "7.29.13",
     "@babel/preset-env": "7.25.4",
     "@rollup/plugin-babel": "5.2.3",
     "@rollup/plugin-commonjs": "17.1.0",
@@ -30,16 +30,14 @@
     "@types/jest": "26.0.20",
     "@types/node": "14.14.21",
     "@zero-cli/zero-test": "0.3.1",
-    "axios": "0.28.0",
+    "axios": "0.34.0",
     "babel-plugin-annotate-pure-calls": "0.4.0",
     "babel-plugin-polyfill-regenerator": "0.6.2",
     "cross-env": "7.0.3",
     "eslint-config-xo-typescript": "0.37.0",
     "husky": "9.1.5",
     "jest": "26.6.3",
-    "rimraf": "5.0.10",
-    "rollup": "2.79.2",
-    "rollup-plugin-sourcemaps": "0.6.3",
+    "rollup": "2.80.0",
     "rollup-plugin-typescript2": "0.29.0",
     "ts-jest": "26.5.1",
     "tslib": "2.1.0",
@@ -50,7 +48,7 @@
     "axios": ">=0.21.1"
   },
   "scripts": {
-    "build": "rimraf dist && rollup --config",
+    "build": "node -e \"require('fs').rmSync('dist', {recursive: true, force: true})\" && rollup --config",
     "lint": "xo",
     "prepare": "husky",
     "test": "cross-env-shell DEBUG=true npm_package_repository_url=https://github.com/bmealhouse/axios-record-replay-adapter zero-test --run-in-band"
