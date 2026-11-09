@@ -41,6 +41,9 @@ patchedDependencies:
   core-assert@0.2.1:
     hash: 4d6e40a6dc5d9fe453ff97ed2e0746b846785cdfd72f57814a8d60d397da324e
     path: patches/core-assert@0.2.1.patch
+  deepmerge@4.2.2:
+    hash: e4406cd1caf44aaf56f4257f8481ee21ae28a79daf27052192ff7ed5d4bebb22
+    path: patches/deepmerge@4.2.2.patch
 
 importers:
 
@@ -5233,7 +5236,7 @@ snapshots:
       '@rollup/pluginutils': 3.1.0(rollup@2.80.0)
       '@types/resolve': 1.17.1
       builtin-modules: 3.2.0
-      deepmerge: 4.2.2
+      deepmerge: 4.2.2(patch_hash=e4406cd1caf44aaf56f4257f8481ee21ae28a79daf27052192ff7ed5d4bebb22)
       is-module: 1.0.0
       resolve: 1.20.0
       rollup: 2.80.0
@@ -6066,7 +6069,7 @@ snapshots:
     dependencies:
       core-assert: 0.2.1(patch_hash=4d6e40a6dc5d9fe453ff97ed2e0746b846785cdfd72f57814a8d60d397da324e)
 
-  deepmerge@4.2.2: {}
+  deepmerge@4.2.2(patch_hash=e4406cd1caf44aaf56f4257f8481ee21ae28a79daf27052192ff7ed5d4bebb22): {}
 
   defer-to-connect@2.0.1: {}
 
@@ -7009,7 +7012,7 @@ snapshots:
       '@jest/types': 26.6.2
       babel-jest: 26.6.3(@babel/core@7.29.13)
       chalk: 4.1.0
-      deepmerge: 4.2.2
+      deepmerge: 4.2.2(patch_hash=e4406cd1caf44aaf56f4257f8481ee21ae28a79daf27052192ff7ed5d4bebb22)
       glob: 7.1.6
       graceful-fs: 4.2.11
       jest-environment-jsdom: 26.6.2

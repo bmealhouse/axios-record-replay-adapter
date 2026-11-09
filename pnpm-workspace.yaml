@@ -32,3 +32,4 @@ overrides:
   "yaml@>=1 <1.10.3": ^1.10.3
 patchedDependencies:
   core-assert@0.2.1: patches/core-assert@0.2.1.patch
+  deepmerge@4.2.2: patches/deepmerge@4.2.2.patch
