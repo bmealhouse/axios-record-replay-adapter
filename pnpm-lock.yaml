@@ -37,6 +37,11 @@ overrides:
   ws@>=7 <7.5.11: ^7.5.11
   yaml@>=1 <1.10.3: ^1.10.3
 
+patchedDependencies:
+  core-assert@0.2.1:
+    hash: 4d6e40a6dc5d9fe453ff97ed2e0746b846785cdfd72f57814a8d60d397da324e
+    path: patches/core-assert@0.2.1.patch
+
 importers:
 
   .:
@@ -5981,7 +5986,7 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  core-assert@0.2.1:
+  core-assert@0.2.1(patch_hash=4d6e40a6dc5d9fe453ff97ed2e0746b846785cdfd72f57814a8d60d397da324e):
     dependencies:
       buf-compare: 1.0.1
       is-error: 2.2.2
@@ -6059,7 +6064,7 @@ snapshots:
 
   deep-strict-equal@0.2.0:
     dependencies:
-      core-assert: 0.2.1
+      core-assert: 0.2.1(patch_hash=4d6e40a6dc5d9fe453ff97ed2e0746b846785cdfd72f57814a8d60d397da324e)
 
   deepmerge@4.2.2: {}
 

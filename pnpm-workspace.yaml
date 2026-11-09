@@ -30,3 +30,5 @@ overrides:
   "uuid@<11.1.1": ^11.1.1
   "ws@>=7 <7.5.11": ^7.5.11
   "yaml@>=1 <1.10.3": ^1.10.3
+patchedDependencies:
+  core-assert@0.2.1: patches/core-assert@0.2.1.patch
