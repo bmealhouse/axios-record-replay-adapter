@@ -1,6 +1,26 @@
 import * as fs from "fs";
+import * as http from "http";
+import { AddressInfo } from "net";
 import axios from "axios";
 import { useAxiosRecordReplayAdapter } from ".";
+
+const user = {
+  data: {
+    id: 7,
+    email: "michael.lawson@reqres.in",
+    first_name: "Michael",
+    last_name: "Lawson",
+    avatar: "https://reqres.in/img/faces/7-image.jpg",
+  },
+  support: {
+    url: "https://reqres.in/#support-heading",
+    text:
+      "To keep ReqRes free, contributions towards server costs are appreciated!",
+  },
+};
+
+let server: http.Server;
+let baseURL: string;
 
 const format = (data: string | Record<string, unknown>): string => {
   if (typeof data !== "string") {
@@ -9,6 +29,23 @@ const format = (data: string | Record<string, unknown>): string => {
 
   return data.replace(/"/g, "’");
 };
+
+beforeAll((done) => {
+  server = http
+    .createServer((_request, response) => {
+      response.setHeader("Content-Type", "application/json");
+      response.end(JSON.stringify(user));
+    })
+    .listen(0, "127.0.0.1", () => {
+      const { port } = server.address() as AddressInfo;
+      baseURL = `http://127.0.0.1:${port}`;
+      done();
+    });
+});
+
+afterAll((done) => {
+  server.close(done);
+});
 
 afterEach(() => {
   try {
@@ -25,30 +62,39 @@ afterEach(() => {
 });
 
 test("creates the default recordings directory", () => {
+  // act
   useAxiosRecordReplayAdapter({
     axiosInstance: axios.create(),
   });
+
+  // assert
   expect(fs.existsSync("./recordings")).toBeTruthy();
 });
 
 test("creates a custom recordings directory", () => {
+  // arrange
   const recordingsDir = "./src/recordings";
 
+  // act
   useAxiosRecordReplayAdapter({
     axiosInstance: axios.create(),
     recordingsDir,
   });
 
+  // assert
   expect(fs.existsSync(recordingsDir)).toBeTruthy();
   fs.rmdirSync(recordingsDir);
 });
 
 test("creates a recording with default filename", async () => {
+  // arrange
   const axiosInstance = axios.create();
   useAxiosRecordReplayAdapter({ axiosInstance });
 
-  const { data } = await axiosInstance.get("https://reqres.in/api/users/7");
+  // act
+  const { data } = await axiosInstance.get(`${baseURL}/api/users/7`);
 
+  // assert
   const [recording] = fs.readdirSync("./recordings");
   expect(recording).toMatchInlineSnapshot(
     `"1ab499d565acf87f67ac738631d42d07.json"`
@@ -88,6 +134,7 @@ test("creates a recording with default filename", async () => {
 });
 
 test("creates a recording with filename prefix", async () => {
+  // arrange
   const axiosInstance = axios.create();
 
   useAxiosRecordReplayAdapter({
@@ -97,8 +144,10 @@ test("creates a recording with filename prefix", async () => {
     },
   });
 
-  await axiosInstance.get("https://reqres.in/api/users/7");
+  // act
+  await axiosInstance.get(`${baseURL}/api/users/7`);
 
+  // assert
   const [recording] = fs.readdirSync("./recordings");
   expect(recording).toMatchInlineSnapshot(
     `"api-users-7_1ab499d565acf87f67ac738631d42d07.json"`
@@ -106,21 +155,23 @@ test("creates a recording with filename prefix", async () => {
 });
 
 test("returns a cached response when a recording exists", async () => {
-  const axiosInstance = axios.create({
-    baseURL: "https://reqres.in",
-  });
+  // arrange
+  const axiosInstance = axios.create({ baseURL });
 
   const spy = jest.spyOn(axiosInstance.defaults, "adapter");
 
+  // act
   useAxiosRecordReplayAdapter({ axiosInstance });
   await axiosInstance.get("/api/users/7");
   await axiosInstance.get("/api/users/7");
   await axiosInstance.get("/api/users/7");
 
+  // assert
   expect(spy).toHaveBeenCalledTimes(1);
 });
 
 test("records a custom request", async () => {
+  // arrange
   const axiosInstance = axios.create();
 
   useAxiosRecordReplayAdapter({
@@ -130,7 +181,10 @@ test("records a custom request", async () => {
     },
   });
 
-  await axiosInstance.get("https://reqres.in/api/users/7");
+  // act
+  await axiosInstance.get(`${baseURL}/api/users/7`);
+
+  // assert
   const [recording] = fs.readdirSync("./recordings");
   const { request } = JSON.parse(
     fs.readFileSync(`./recordings/${recording}`, "utf8")
@@ -144,6 +198,7 @@ test("records a custom request", async () => {
 });
 
 test("create a custom reponse", async () => {
+  // arrange
   const axiosInstance = axios.create();
 
   useAxiosRecordReplayAdapter({
@@ -153,7 +208,10 @@ test("create a custom reponse", async () => {
     },
   });
 
-  await axiosInstance.get("https://reqres.in/api/users/7");
+  // act
+  await axiosInstance.get(`${baseURL}/api/users/7`);
+
+  // assert
   const [recording] = fs.readdirSync("./recordings");
   const { response } = JSON.parse(
     fs.readFileSync(`./recordings/${recording}`, "utf8")
@@ -167,11 +225,18 @@ test("create a custom reponse", async () => {
 });
 
 test("restores default axios adapter", () => {
+  // arrange
   const defaultAdapter = axios.defaults.adapter;
 
+  // act
   const restoreDefaultAdapater = useAxiosRecordReplayAdapter();
+
+  // assert
   expect(axios.defaults.adapter).not.toBe(defaultAdapter);
 
+  // act
   restoreDefaultAdapater();
+
+  // assert
   expect(axios.defaults.adapter).toBe(defaultAdapter);
 });
