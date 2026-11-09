@@ -117,10 +117,10 @@ useAxiosRecordReplayAdapter({
 ## Contributing
 
 1. [Fork](https://help.github.com/en/articles/fork-a-repo) this repository to your own GitHub account and then [clone](https://help.github.com/en/articles/cloning-a-repository) it to your local device
-1. Install the dependecies using `yarn`
-1. Link the package to the global module directory: `yarn link`
-1. Run `yarn test --watch` and start making your changes
-1. You can use `yarn link axios-record-replay-adapter` to test your changes in a local project
+1. Install the dependecies using `pnpm install`
+1. Link the package to the global module directory: `pnpm link --global`
+1. Run `pnpm test --watch` and start making your changes
+1. You can use `pnpm link --global axios-record-replay-adapter` to test your changes in a local project
 1. Ensure any changes are documented in `CHANGELOG.md`
 
 ## License
