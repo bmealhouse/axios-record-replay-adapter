@@ -16,19 +16,23 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Use Node ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+          cache: pnpm
 
-      - name: Install deps and build (with cache)
-        uses: bahmutov/npm-install@v1
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: yarn lint
+        run: pnpm lint
 
       - name: Test
-        run: yarn test --ci --coverage
+        run: pnpm test --ci --coverage
 
       - name: Build
-        run: yarn build
+        run: pnpm build
